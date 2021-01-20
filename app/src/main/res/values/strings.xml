@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Secure Notes</string>
+    <string name="biometric_message">Unlock with Biometrics</string>
+
+    <string name="string_add_note">Add Note</string>
+    <string name="string_back_to_notes">Back to Notes</string>
+
+    <string name="notes_title">Notes</string>
+    <string name="search_hint">Search Notes</string>
+
+    <string name="add_note_title">Create a Note</string>
+    <string name="title_hint">Note Title</string>
+    <string name="subtitle_hint">Note Subtitle</string>
+    <string name="description_hint">Description</string>
+    <string name="confirm_button">Add Note</string>
+
+    <!-- Recycler Item Temporary Text -->
+    <string name="recycler_title">Item Title</string>
+    <string name="recycler_subtitle">Item Subtitle</string>
+    <string name="recycler_description">Item Description</string>
+    <string name="recycler_date_time">Item Date &amp; Time</string>
+
+</resources>

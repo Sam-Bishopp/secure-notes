@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8sp"
+    android:background="@color/colorBlack">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCardView"
+        android:padding="8sp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemTitle"
+            android:text="@string/recycler_title"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingStart="20sp"
+            android:paddingEnd="0sp"
+            android:paddingTop="10sp"
+            android:paddingBottom="5sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemDateTime"
+            android:text="@string/recycler_date_time"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            android:paddingStart="20sp"
+            android:paddingEnd="0sp"
+            android:paddingTop="20sp"
+            android:paddingBottom="5sp"
+            app:layout_constraintTop_toBottomOf="@id/itemDescription"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemSubtitle"
+            android:text="@string/recycler_subtitle"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp"
+            android:paddingStart="20sp"
+            android:paddingEnd="0sp"
+            android:paddingTop="3sp"
+            android:paddingBottom="5sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@+id/itemTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemDescription"
+            android:text="@string/recycler_description"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:paddingStart="20sp"
+            android:paddingEnd="0sp"
+            android:paddingTop="3sp"
+            android:paddingBottom="5sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toBottomOf="@+id/itemSubtitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

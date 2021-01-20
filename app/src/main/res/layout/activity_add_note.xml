@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlueBackground"
+    android:paddingStart="30sp"
+    android:paddingEnd="30sp"
+    tools:context=".activities.MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/addActivityTitle"
+            android:text="@string/add_note_title"
+            android:textSize="32sp"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:paddingTop="20dp"
+            android:paddingBottom="10sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteTitle"
+            android:hint="@string/title_hint"
+            android:textColorHint="@color/colorHint"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:inputType="text"
+            android:importantForAutofill="no"
+            app:layout_constraintTop_toBottomOf="@id/addActivityTitle"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteDateTime"
+            android:includeFontPadding="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_12ssp"
+            android:paddingTop="@dimen/_11ssp"
+            android:paddingBottom="@dimen/_11ssp"
+            app:layout_constraintStart_toStartOf="@id/noteTitle"
+            app:layout_constraintTop_toBottomOf="@id/noteTitle"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteSubtitle"
+            android:includeFontPadding="false"
+            android:hint="@string/subtitle_hint"
+            android:textColorHint="@color/colorHint"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:inputType="textMultiLine"
+            android:importantForAutofill="no"
+            app:layout_constraintTop_toBottomOf="@id/noteDateTime"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noteDescription"
+            android:includeFontPadding="false"
+            android:hint="@string/description_hint"
+            android:textColorHint="@color/colorHint"
+            android:textColor="@color/colorWhite"
+            android:textStyle="normal"
+            android:textSize="16sp"
+            android:inputType="textMultiLine"
+            android:minHeight="@dimen/_125sdp"
+            android:importantForAutofill="no"
+            app:layout_constraintTop_toBottomOf="@id/noteSubtitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/saveNoteBtn"
+            android:text="@string/confirm_button"
+            android:src="@drawable/ic_save"
+            app:layout_constraintBottom_toTopOf="@id/noteTitle"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
