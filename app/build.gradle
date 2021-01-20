@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.securenotes"
+        applicationId "com.sambishopp.securenotes"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1

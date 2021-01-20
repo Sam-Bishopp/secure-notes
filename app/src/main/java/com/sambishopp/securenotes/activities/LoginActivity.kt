@@ -1,4 +1,4 @@
-package com.example.securenotes.activities
+package com.sambishopp.securenotes.activities
 
 import android.app.KeyguardManager
 import android.content.Context
@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.securenotes.R
+import com.sambishopp.securenotes.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity()

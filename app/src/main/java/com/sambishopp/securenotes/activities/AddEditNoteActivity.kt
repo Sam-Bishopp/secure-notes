@@ -1,4 +1,4 @@
-package com.example.securenotes.activities
+package com.sambishopp.securenotes.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.example.securenotes.R
+import com.sambishopp.securenotes.R
 import kotlinx.android.synthetic.main.activity_add_note.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat

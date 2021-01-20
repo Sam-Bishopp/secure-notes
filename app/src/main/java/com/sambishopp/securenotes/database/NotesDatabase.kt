@@ -1,4 +1,4 @@
-package com.example.securenotes.database
+package com.sambishopp.securenotes.database
 
 import android.content.Context
 import androidx.room.Database

@@ -1,8 +1,7 @@
-package com.example.securenotes.database
+package com.sambishopp.securenotes.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.securenotes.database.Note
 
 @Dao
 interface NoteDao

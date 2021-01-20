@@ -1,4 +1,4 @@
-package com.example.securenotes
+package com.sambishopp.securenotes
 
 import org.junit.Test
 

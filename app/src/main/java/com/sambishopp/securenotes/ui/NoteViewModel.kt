@@ -1,10 +1,9 @@
-package com.example.securenotes.ui
+package com.sambishopp.securenotes.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import com.example.securenotes.database.Note
-import com.example.securenotes.database.NoteRepository
+import com.sambishopp.securenotes.database.Note
+import com.sambishopp.securenotes.database.NoteRepository
 
 class NoteViewModel(application: Application) : AndroidViewModel(application)
 {

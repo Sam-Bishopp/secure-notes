@@ -1,4 +1,4 @@
-package com.example.securenotes.database
+package com.sambishopp.securenotes.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

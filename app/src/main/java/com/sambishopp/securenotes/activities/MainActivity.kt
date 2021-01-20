@@ -1,10 +1,9 @@
-package com.example.securenotes.activities
+package com.sambishopp.securenotes.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -15,13 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.securenotes.R
-import com.example.securenotes.database.Note
-import com.example.securenotes.ui.NoteListAdapter
-import com.example.securenotes.ui.NoteViewModel
+import com.sambishopp.securenotes.R
+import com.sambishopp.securenotes.database.Note
+import com.sambishopp.securenotes.ui.NoteListAdapter
+import com.sambishopp.securenotes.ui.NoteViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
-import java.sql.Time
 import java.util.*
 
 class MainActivity : AppCompatActivity()

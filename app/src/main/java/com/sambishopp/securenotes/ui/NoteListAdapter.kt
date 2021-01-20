@@ -1,12 +1,12 @@
-package com.example.securenotes.ui
+package com.sambishopp.securenotes.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.securenotes.R
-import com.example.securenotes.database.Note
+import com.sambishopp.securenotes.R
+import com.sambishopp.securenotes.database.Note
 import kotlinx.android.synthetic.main.recycler_item.view.*
 
 class NoteListAdapter : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>()

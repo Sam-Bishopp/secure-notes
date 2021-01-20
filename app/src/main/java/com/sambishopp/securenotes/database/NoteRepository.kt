@@ -1,7 +1,6 @@
-package com.example.securenotes.database
+package com.sambishopp.securenotes.database
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
