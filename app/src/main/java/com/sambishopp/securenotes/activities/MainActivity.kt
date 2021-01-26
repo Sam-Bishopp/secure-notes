@@ -19,6 +19,7 @@ import com.sambishopp.securenotes.database.Note
 import com.sambishopp.securenotes.ui.NoteListAdapter
 import com.sambishopp.securenotes.ui.NoteViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.sambishopp.securenotes.services.AutoLogoutService
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -27,8 +28,7 @@ class MainActivity : AppCompatActivity()
     private val ADD_NOTE_REQUEST: Int = 1
     private val EDIT_NOTE_REQUEST: Int = 2
 
-    private var lockTimer = Timer()
-    private val appLockTimer: Long = 300000
+    //private val serviceIntent = Intent(this, AutoLogoutService::class.java)
 
     private lateinit var noteViewModel: NoteViewModel
     private lateinit var adapter: NoteListAdapter
@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity()
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorCardView)
         setContentView(R.layout.activity_main)
 
-        startUserSession()
+        val serviceIntent = Intent(this, AutoLogoutService::class.java)
+        startService(serviceIntent)
 
         val noteSearchEditText = findViewById<EditText>(R.id.noteSearch)
         noteSearchEditText.addTextChangedListener(object : TextWatcher {
@@ -123,18 +124,6 @@ class MainActivity : AppCompatActivity()
         })
     }
 
-    override fun onPause()
-    {
-        super.onPause()
-        stopTimer()
-    }
-
-    override fun onResume()
-    {
-        super.onResume()
-        resetTimer()
-    }
-
     fun searchDatabase(query: Editable?)
     {
         val searchQuery = "%$query%"
@@ -178,47 +167,10 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    private fun startUserSession()
-    {
-        lockTimer.schedule(object : TimerTask()
-        {
-            override fun run()
-            {
-                logoutUser()
-            }
-
-        }, appLockTimer)
-    }
-
-    private fun resetTimer()
-    {
-        lockTimer.cancel()
-        lockTimer = Timer()
-
-        lockTimer.schedule(object: TimerTask()
-        {
-            override fun run()
-            {
-                logoutUser()
-            }
-        }, appLockTimer)
-    }
-
-    private fun stopTimer()
-    {
-        lockTimer.cancel()
-    }
-
     override fun onUserInteraction()
     {
         super.onUserInteraction()
-        resetTimer()
-    }
-
-    fun logoutUser()
-    {
-        val logoutIntent = Intent(this, LoginActivity::class.java)
-        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(logoutIntent)
+        val serviceIntent = Intent(this, AutoLogoutService::class.java)
     }
 }
+

@@ -19,5 +19,4 @@
     <string name="recycler_subtitle">Item Subtitle</string>
     <string name="recycler_description">Item Description</string>
     <string name="recycler_date_time">Item Date &amp; Time</string>
-
 </resources>

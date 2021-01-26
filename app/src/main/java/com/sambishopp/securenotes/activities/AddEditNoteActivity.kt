@@ -24,9 +24,6 @@ class AddEditNoteActivity : AppCompatActivity()
         val EXTRA_ID: String = "com.example.securenotes.activities.EXTRA_ID"
     }
 
-    private var lockTimer = Timer()
-    private val appLockTimer: Long = 300000
-
     private lateinit var addActivityTitleText: TextView
     private lateinit var noteTitleText: EditText
     private lateinit var noteDateTimeText: TextView
@@ -71,18 +68,6 @@ class AddEditNoteActivity : AppCompatActivity()
         }
     }
 
-    override fun onPause()
-    {
-        super.onPause()
-        stopTimer()
-    }
-
-    override fun onResume()
-    {
-        super.onResume()
-        resetTimer()
-    }
-
     private fun saveNote()
     {
         val title = noteTitleText.text.toString()
@@ -117,47 +102,8 @@ class AddEditNoteActivity : AppCompatActivity()
         return true
     }
 
-    private fun startUserSession()
-    {
-        lockTimer.schedule(object : TimerTask()
-        {
-            override fun run()
-            {
-                logoutUser()
-            }
-
-        }, appLockTimer)
-    }
-
-    private fun resetTimer()
-    {
-        lockTimer.cancel()
-        lockTimer = Timer()
-
-        lockTimer.schedule(object: TimerTask()
-        {
-            override fun run()
-            {
-                logoutUser()
-            }
-        }, appLockTimer)
-    }
-
-    private fun stopTimer()
-    {
-        lockTimer.cancel()
-    }
-
     override fun onUserInteraction()
     {
         super.onUserInteraction()
-        resetTimer()
-    }
-
-    fun logoutUser()
-    {
-        val logoutIntent = Intent(this, LoginActivity::class.java)
-        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(logoutIntent)
     }
 }

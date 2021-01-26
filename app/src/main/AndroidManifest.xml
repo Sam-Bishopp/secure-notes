@@ -3,6 +3,8 @@
     package="com.sambishopp.securenotes">
 
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.sambishopp.securenotes.activities.LoginActivity">
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +20,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.sambishopp.securenotes.activities.MainActivity" />
-        <activity android:name="com.sambishopp.securenotes.activities.AddEditNoteActivity" />
+        <activity android:name=".activities.MainActivity" />
+        <activity android:name=".activities.AddEditNoteActivity" />
+        <service android:name=".services.AutoLogoutService" />
     </application>
 </manifest>
