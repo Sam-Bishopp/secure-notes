@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity()
     private val ADD_NOTE_REQUEST: Int = 1
     private val EDIT_NOTE_REQUEST: Int = 2
 
-    //private val serviceIntent = Intent(this, AutoLogoutService::class.java)
-
     private lateinit var noteViewModel: NoteViewModel
     private lateinit var adapter: NoteListAdapter
 
@@ -170,7 +168,7 @@ class MainActivity : AppCompatActivity()
     override fun onUserInteraction()
     {
         super.onUserInteraction()
-        val serviceIntent = Intent(this, AutoLogoutService::class.java)
+        //AutoLogoutService().restartUserSession()
     }
 }
 

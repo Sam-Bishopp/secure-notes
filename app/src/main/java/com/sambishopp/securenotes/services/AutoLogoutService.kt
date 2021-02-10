@@ -2,35 +2,53 @@ package com.sambishopp.securenotes.services
 
 import android.app.*
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.os.CountDownTimer
 import android.os.IBinder
+import android.view.View
 import androidx.core.app.NotificationCompat
 import com.sambishopp.securenotes.R
 import com.sambishopp.securenotes.activities.LoginActivity
 import com.sambishopp.securenotes.activities.MainActivity
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AutoLogoutService: Service()
 {
     private var lockTimer = Timer()
-    private val appLockTimer: Long = 300000
+    private val appLockTime: Long = 600000 //5000
+    private val dateFormatter: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
+    private lateinit var nManager: NotificationManager
+    private lateinit var nChannel: NotificationChannel
     private val nChannelId = "Logout Service Notification"
-
-    override fun onCreate()
-    {
-        super.onCreate()
-    }
+    private val nDescription = "Service to logout user"
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val lockTimeMillis: Long = System.currentTimeMillis() + 600000
+        val lockTime = dateFormatter.format(lockTimeMillis)
+
+        nManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        nChannel = NotificationChannel(
+            nChannelId,
+            nDescription,
+            NotificationManager.IMPORTANCE_NONE
+        )
+        nChannel.enableVibration(false)
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
-        val serviceNotification = NotificationCompat.Builder(this, nChannelId)
-            .setContentTitle("Secure Notes")
-            .setContentText("App will auto lock soon.")
+        nManager.createNotificationChannel(nChannel)
+
+        val notificationBuilder = NotificationCompat.Builder(this, nChannelId)
+        val serviceNotification = notificationBuilder.setOngoing(true)
+            .setContentTitle("Auto-Logout Service")
+            .setContentText("App will auto lock at " + lockTime)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setVibrate(null)
             .setContentIntent(pendingIntent)
             .build()
 
@@ -50,33 +68,14 @@ class AutoLogoutService: Service()
 
     private fun startUserSession()
     {
-        lockTimer.schedule(object : TimerTask()
-        {
-            override fun run()
+            lockTimer.schedule(object : TimerTask()
             {
-                logoutUser()
-            }
+                override fun run()
+                {
+                    logoutUser()
+                }
 
-        }, appLockTimer)
-    }
-
-    private fun resetTimer()
-    {
-        lockTimer.cancel()
-        lockTimer = Timer()
-
-        lockTimer.schedule(object: TimerTask()
-        {
-            override fun run()
-            {
-                logoutUser()
-            }
-        }, appLockTimer)
-    }
-
-    private fun stopTimer()
-    {
-        lockTimer.cancel()
+            }, appLockTime)
     }
 
     fun logoutUser()
