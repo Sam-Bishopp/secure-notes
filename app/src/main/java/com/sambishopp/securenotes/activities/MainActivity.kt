@@ -1,12 +1,15 @@
 package com.sambishopp.securenotes.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -19,7 +22,6 @@ import com.sambishopp.securenotes.database.Note
 import com.sambishopp.securenotes.ui.NoteListAdapter
 import com.sambishopp.securenotes.ui.NoteViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.sambishopp.securenotes.services.AutoLogoutService
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -27,6 +29,13 @@ class MainActivity : AppCompatActivity()
 {
     private val ADD_NOTE_REQUEST: Int = 1
     private val EDIT_NOTE_REQUEST: Int = 2
+
+    private val checkUserActivityTime: Long = 540000 //5000
+    private lateinit var checkUserActivityTimer : CountDownTimer
+    private lateinit var alertDialog : AlertDialog
+
+    private lateinit var lockTimer: CountDownTimer
+    private val appLockTime: Long = 600000 //10000 //5000
 
     private lateinit var noteViewModel: NoteViewModel
     private lateinit var adapter: NoteListAdapter
@@ -37,8 +46,8 @@ class MainActivity : AppCompatActivity()
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorCardView)
         setContentView(R.layout.activity_main)
 
-        val serviceIntent = Intent(this, AutoLogoutService::class.java)
-        startService(serviceIntent)
+        checkUserActivity()
+        startUserSession()
 
         val noteSearchEditText = findViewById<EditText>(R.id.noteSearch)
         noteSearchEditText.addTextChangedListener(object : TextWatcher {
@@ -165,10 +174,59 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    override fun onUserInteraction()
+    private fun checkUserActivity()
     {
-        super.onUserInteraction()
-        //AutoLogoutService().restartUserSession()
+        checkUserActivityTimer = object : CountDownTimer(checkUserActivityTime, 1000)
+        {
+            override fun onTick(p0: Long) {}
+
+            override fun onFinish() { checkUserActivityDialog() }
+
+        }.start()
+    }
+
+    private fun userStillActive()
+    {
+        checkUserActivityTimer.cancel()
+        lockTimer.cancel()
+
+        checkUserActivity()
+        startUserSession()
+    }
+
+    fun checkUserActivityDialog()
+    {
+        val builder : AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Auto Logout in 1 minute")
+        builder.setMessage("Do you wish to continue using the app?")
+
+        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, _ -> userStillActive() })
+        builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, _ -> logoutUser() })
+
+        alertDialog = builder.create()
+        alertDialog.show()
+    }
+
+    private fun startUserSession()
+    {
+        lockTimer = object : CountDownTimer(appLockTime, 1000)
+        {
+            override fun onTick(p0: Long) {}
+
+            override fun onFinish() { logoutUser() }
+
+        }.start()
+    }
+
+    fun logoutUser()
+    {
+        val logoutIntent = Intent(this, LoginActivity::class.java)
+        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        lockTimer.cancel()
+        alertDialog.dismiss()
+        startActivity(logoutIntent)
     }
 }
 
