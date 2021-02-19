@@ -14,6 +14,12 @@
     <string name="description_hint">Description</string>
     <string name="confirm_button">Add Note</string>
 
+    <!--Preferences Strings-->
+    <string name="settings_title">Settings</string>
+
+    <string name="settings_lock_time_title">Choose Time Until Lock</string>
+    <string name="default_option">10 Minutes</string>
+
     <!-- Recycler Item Temporary Text -->
     <string name="recycler_title">Item Title</string>
     <string name="recycler_subtitle">Item Subtitle</string>

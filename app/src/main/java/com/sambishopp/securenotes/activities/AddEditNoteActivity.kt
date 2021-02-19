@@ -1,5 +1,6 @@
 package com.sambishopp.securenotes.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
@@ -17,11 +18,11 @@ class AddEditNoteActivity : AppCompatActivity()
 {
     companion object
     {
-        val EXTRA_TITLE: String = "com.example.securenotes.activities.EXTRA_TITLE"
-        val EXTRA_SUBTITLE: String = "com.example.securenotes.activities.EXTRA_SUBTITLE"
-        val EXTRA_DESCRIPTION: String = "com.example.securenotes.activities.EXTRA_DESCRIPTION"
-        val EXTRA_DATE_TIME: String = "com.example.securenotes.activities.EXTRA_DATE_TIME"
-        val EXTRA_ID: String = "com.example.securenotes.activities.EXTRA_ID"
+        const val EXTRA_TITLE: String = "com.example.securenotes.activities.EXTRA_TITLE"
+        const val EXTRA_SUBTITLE: String = "com.example.securenotes.activities.EXTRA_SUBTITLE"
+        const val EXTRA_DESCRIPTION: String = "com.example.securenotes.activities.EXTRA_DESCRIPTION"
+        const val EXTRA_DATE_TIME: String = "com.example.securenotes.activities.EXTRA_DATE_TIME"
+        const val EXTRA_ID: String = "com.example.securenotes.activities.EXTRA_ID"
     }
 
     private lateinit var addActivityTitleText: TextView
@@ -30,6 +31,7 @@ class AddEditNoteActivity : AppCompatActivity()
     private lateinit var noteSubtitleText: EditText
     private lateinit var noteDescriptionText: EditText
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -100,10 +102,5 @@ class AddEditNoteActivity : AppCompatActivity()
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    override fun onUserInteraction()
-    {
-        super.onUserInteraction()
     }
 }

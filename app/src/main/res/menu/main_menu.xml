@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="@string/string_add_note" android:id="@+id/add_note_menu" />
-    <item android:title="@string/string_back_to_notes" android:id="@+id/back_to_note_menu" />
+    <item android:title="@string/settings_title" android:id="@+id/settings_menu" />
 </menu>

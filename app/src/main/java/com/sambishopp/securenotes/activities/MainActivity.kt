@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -25,14 +27,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity()
-{
-    private val ADD_NOTE_REQUEST: Int = 1
-    private val EDIT_NOTE_REQUEST: Int = 2
+class MainActivity : AppCompatActivity() {
+    companion object
+    {
+        private const val ADD_NOTE_REQUEST: Int = 1
+        private const val EDIT_NOTE_REQUEST: Int = 2
+    }
 
     private val checkUserActivityTime: Long = 540000 //5000
-    private lateinit var checkUserActivityTimer : CountDownTimer
-    private lateinit var alertDialog : AlertDialog
+    private lateinit var checkUserActivityTimer: CountDownTimer
+
+    private lateinit var logoutAlertDialog: AlertDialog
+    private lateinit var deleteNoteAlertDialog: AlertDialog
 
     private lateinit var lockTimer: CountDownTimer
     private val appLockTime: Long = 600000 //10000 //5000
@@ -40,8 +46,7 @@ class MainActivity : AppCompatActivity()
     private lateinit var noteViewModel: NoteViewModel
     private lateinit var adapter: NoteListAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorCardView)
         setContentView(R.layout.activity_main)
@@ -79,38 +84,30 @@ class MainActivity : AppCompatActivity()
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
-        
+
         noteViewModel = ViewModelProvider(
             this, ViewModelProvider.AndroidViewModelFactory.getInstance(
                 this.application
             )
         ).get(NoteViewModel::class.java)
-        noteViewModel.getAllNotes()?.observe(this, Observer { notes ->
-            notes.let {
-                adapter.setData(
-                    notes
-                )
-            }
-        })
 
-        val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(
+        getAllNotesDisplay()
+
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        )
-        {
+        ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
-            ): Boolean
-            {
+            ): Boolean {
                 return false
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int)
-            {
-                noteViewModel.deleteNote(adapter.getNoteAt(viewHolder.adapterPosition))
-                Toast.makeText(this@MainActivity, "Note Deleted", Toast.LENGTH_SHORT).show()
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val notePosition = adapter.getNoteAt(viewHolder.adapterPosition)
+                deleteNoteDialog(notePosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
@@ -131,8 +128,7 @@ class MainActivity : AppCompatActivity()
         })
     }
 
-    fun searchDatabase(query: Editable?)
-    {
+    fun searchDatabase(query: Editable?) {
         val searchQuery = "%$query%"
         noteViewModel.searchNotes(searchQuery)?.observe(this, { searchedNotes ->
             searchedNotes.let {
@@ -143,12 +139,10 @@ class MainActivity : AppCompatActivity()
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
-    {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK)
-        {
+        if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
             val title = data?.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
             val subtitle = data?.getStringExtra(AddEditNoteActivity.EXTRA_SUBTITLE)
             val description = data?.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
@@ -158,9 +152,7 @@ class MainActivity : AppCompatActivity()
             noteViewModel.insertNote(note)
 
             Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT).show()
-        }
-        else if(requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK)
-        {
+        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
             val id = data!!.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
             val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
             val subtitle = data.getStringExtra(AddEditNoteActivity.EXTRA_SUBTITLE)
@@ -174,19 +166,50 @@ class MainActivity : AppCompatActivity()
         }
     }
 
-    private fun checkUserActivity()
-    {
-        checkUserActivityTimer = object : CountDownTimer(checkUserActivityTime, 1000)
+    private fun getAllNotesDisplay() {
+        noteViewModel.getAllNotes()?.observe(this, Observer { notes ->
+            notes.let {
+                adapter.setData(
+                    notes
+                )
+            }
+        })
+
+        if(this::deleteNoteAlertDialog.isInitialized)
         {
+            deleteNoteAlertDialog.dismiss()
+        }
+    }
+
+    private fun deleteNote(notePosition: Note) {
+        noteViewModel.deleteNote(notePosition)
+        Toast.makeText(this@MainActivity, "Note Deleted", Toast.LENGTH_SHORT).show()
+    }
+
+    fun deleteNoteDialog(notePosition: Note) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Delete Note")
+        builder.setMessage("Are you sure you want to delete this note?")
+
+        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { _, _ -> deleteNote(notePosition) })
+        builder.setNegativeButton("No", DialogInterface.OnClickListener { _, _ ->  getAllNotesDisplay()})
+
+        deleteNoteAlertDialog = builder.create()
+        deleteNoteAlertDialog.show()
+    }
+
+    private fun checkUserActivity() {
+        checkUserActivityTimer = object : CountDownTimer(checkUserActivityTime, 1000) {
             override fun onTick(p0: Long) {}
 
-            override fun onFinish() { checkUserActivityDialog() }
+            override fun onFinish() {
+                checkUserActivityDialog()
+            }
 
         }.start()
     }
 
-    private fun userStillActive()
-    {
+    private fun userStillActive() {
         checkUserActivityTimer.cancel()
         lockTimer.cancel()
 
@@ -194,39 +217,64 @@ class MainActivity : AppCompatActivity()
         startUserSession()
     }
 
-    fun checkUserActivityDialog()
-    {
-        val builder : AlertDialog.Builder = AlertDialog.Builder(this)
+    fun checkUserActivityDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Auto Logout in 1 minute")
         builder.setMessage("Do you wish to continue using the app?")
 
-        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, _ -> userStillActive() })
-        builder.setNegativeButton("No", DialogInterface.OnClickListener { dialog, _ -> logoutUser() })
+        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { _, _ -> userStillActive() })
+        builder.setNegativeButton("No", DialogInterface.OnClickListener { _, _ -> logoutUser() })
 
-        alertDialog = builder.create()
-        alertDialog.show()
+        logoutAlertDialog = builder.create()
+        logoutAlertDialog.show()
     }
 
-    private fun startUserSession()
-    {
-        lockTimer = object : CountDownTimer(appLockTime, 1000)
-        {
+    private fun startUserSession() {
+        lockTimer = object : CountDownTimer(appLockTime, 1000) {
             override fun onTick(p0: Long) {}
 
-            override fun onFinish() { logoutUser() }
+            override fun onFinish() {
+                logoutUser()
+            }
 
         }.start()
     }
 
-    fun logoutUser()
-    {
+    fun logoutUser() {
         val logoutIntent = Intent(this, LoginActivity::class.java)
         logoutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         lockTimer.cancel()
-        alertDialog.dismiss()
+        logoutAlertDialog.dismiss()
+        if(this::deleteNoteAlertDialog.isInitialized) { deleteNoteAlertDialog.dismiss() }
         startActivity(logoutIntent)
     }
-}
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean
+    {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        val id = item.itemId
+        var menuSelected = ""
+
+        when(id)
+        {
+            R.id.settings_menu -> menuSelected = "Settings Menu"
+        }
+        Toast.makeText(this, menuSelected, Toast.LENGTH_SHORT).show()
+
+        if(id == R.id.settings_menu)
+        {
+            val intent = Intent(this, PreferenceActivity::class.java)
+            startActivity(intent)
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+}

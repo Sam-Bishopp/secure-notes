@@ -22,6 +22,6 @@
 
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.AddEditNoteActivity" />
-        <service android:name=".services.AutoLogoutService" />
+        <activity android:name=".activities.PreferenceActivity"/>
     </application>
 </manifest>
