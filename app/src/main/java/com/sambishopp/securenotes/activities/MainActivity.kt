@@ -1,5 +1,9 @@
 package com.sambishopp.securenotes.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -13,17 +17,19 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.sambishopp.securenotes.R
 import com.sambishopp.securenotes.database.Note
 import com.sambishopp.securenotes.ui.NoteListAdapter
 import com.sambishopp.securenotes.ui.NoteViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -33,6 +39,11 @@ class MainActivity : AppCompatActivity() {
         private const val ADD_NOTE_REQUEST: Int = 1
         private const val EDIT_NOTE_REQUEST: Int = 2
     }
+
+    private val channelId = "channel_id_01"
+    private val notificationId = 101
+
+    //val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
     private val checkUserActivityTime: Long = 540000 //5000
     private lateinit var checkUserActivityTimer: CountDownTimer
@@ -51,8 +62,11 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor = ContextCompat.getColor(this, R.color.colorCardView)
         setContentView(R.layout.activity_main)
 
+        //Begin the user session and check user activity function.
         checkUserActivity()
         startUserSession()
+
+        createNotificationChannel()
 
         val noteSearchEditText = findViewById<EditText>(R.id.noteSearch)
         noteSearchEditText.addTextChangedListener(object : TextWatcher {
@@ -128,6 +142,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        getAllNotesDisplay()
+    }
+
     fun searchDatabase(query: Editable?) {
         val searchQuery = "%$query%"
         noteViewModel.searchNotes(searchQuery)?.observe(this, { searchedNotes ->
@@ -137,6 +156,7 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         })
+        if(searchQuery.isEmpty()) { getAllNotesDisplay() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -152,7 +172,8 @@ class MainActivity : AppCompatActivity() {
             noteViewModel.insertNote(note)
 
             Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT).show()
-        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+        }
+        else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
             val id = data!!.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
             val title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE)
             val subtitle = data.getStringExtra(AddEditNoteActivity.EXTRA_SUBTITLE)
@@ -234,6 +255,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTick(p0: Long) {}
 
             override fun onFinish() {
+                logoutNotification()
                 logoutUser()
             }
 
@@ -248,7 +270,38 @@ class MainActivity : AppCompatActivity() {
         lockTimer.cancel()
         logoutAlertDialog.dismiss()
         if(this::deleteNoteAlertDialog.isInitialized) { deleteNoteAlertDialog.dismiss() }
+
         startActivity(logoutIntent)
+    }
+
+    private fun createNotificationChannel()
+    {
+        val name = "Notification Title"
+        val descriptionText = "The app has logged out"
+        val importance = NotificationManager.IMPORTANCE_LOW
+
+        val channel = NotificationChannel(channelId, name, importance).apply { description = descriptionText }
+        channel.enableVibration(false)
+
+        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun logoutNotification()
+    {
+        val notificationIntent = Intent(this, LoginActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK }
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setContentTitle("Secure Notes has auto-locked")
+            .setContentText("Please verify your identity when using the app again")
+            .setChannelId(channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentIntent(pendingIntent)
+
+        with(NotificationManagerCompat.from(this)) {
+            notify(notificationId, notificationBuilder.build())
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean
@@ -261,13 +314,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean
     {
         val id = item.itemId
-        var menuSelected = ""
-
-        when(id)
-        {
-            R.id.settings_menu -> menuSelected = "Settings Menu"
-        }
-        Toast.makeText(this, menuSelected, Toast.LENGTH_SHORT).show()
 
         if(id == R.id.settings_menu)
         {

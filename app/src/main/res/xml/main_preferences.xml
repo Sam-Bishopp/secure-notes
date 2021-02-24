@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/preferencesParent"
     android:background="@color/colorBlueBackground">
 
     <PreferenceCategory
-        android:title="General">
+        android:title="App Lock Timer"
+        app:key="lockCategory">
 
-        <MultiSelectListPreference
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="lockTimerOnOff"
+            android:title="Lock timer: Off/On"
+            android:summaryOn="Switch on"
+            android:summaryOff="Switch off"
+            />
+
+        <ListPreference
             android:defaultValue="false"
-            android:key="lockTimerLengthChoice"
+            app:key="lockTimerLengthChoice"
             android:title="@string/settings_lock_time_title"
             android:summary="@string/default_option"
             android:entries="@array/lock_times"
             android:entryValues="@array/lock_times_values"
             android:dialogTitle="@string/settings_lock_time_title"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Notification"
+        app:key="notificationCategory">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="notificationOnOff"
+            android:title="Be notified when the app locks"
             />
 
     </PreferenceCategory>

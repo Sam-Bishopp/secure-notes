@@ -16,6 +16,7 @@
 
     <!--Preferences Strings-->
     <string name="settings_title">Settings</string>
+    <string name="lock_time_choice_key" />
 
     <string name="settings_lock_time_title">Choose Time Until Lock</string>
     <string name="default_option">10 Minutes</string>
