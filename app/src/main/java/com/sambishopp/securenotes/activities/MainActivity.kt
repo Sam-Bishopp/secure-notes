@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -20,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -156,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         })
-        if(searchQuery.isEmpty()) { getAllNotesDisplay() }
+        if(searchQuery.trim().isEmpty()) { getAllNotesDisplay() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -188,7 +186,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getAllNotesDisplay() {
-        noteViewModel.getAllNotes()?.observe(this, Observer { notes ->
+        noteViewModel.getAllNotes()?.observe(this, { notes -> //Try removing the SAM here
             notes.let {
                 adapter.setData(
                     notes
@@ -212,8 +210,8 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Delete Note")
         builder.setMessage("Are you sure you want to delete this note?")
 
-        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { _, _ -> deleteNote(notePosition) })
-        builder.setNegativeButton("No", DialogInterface.OnClickListener { _, _ ->  getAllNotesDisplay()})
+        builder.setPositiveButton("Yes") { _, _ -> deleteNote(notePosition) }
+        builder.setNegativeButton("No") { _, _ -> getAllNotesDisplay() }
 
         deleteNoteAlertDialog = builder.create()
         deleteNoteAlertDialog.show()
@@ -243,10 +241,14 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Auto Logout in 1 minute")
         builder.setMessage("Do you wish to continue using the app?")
 
-        builder.setPositiveButton("Yes", DialogInterface.OnClickListener { _, _ -> userStillActive() })
-        builder.setNegativeButton("No", DialogInterface.OnClickListener { _, _ -> logoutUser() })
+        builder.setPositiveButton("Yes") { _, _ -> userStillActive() }
+        builder.setNegativeButton("No") { _, _ -> logoutUser() }
 
         logoutAlertDialog = builder.create()
+
+        logoutAlertDialog.setCanceledOnTouchOutside(false)
+        logoutAlertDialog.setCancelable(false)
+
         logoutAlertDialog.show()
     }
 
@@ -268,8 +270,10 @@ class MainActivity : AppCompatActivity() {
         logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
         lockTimer.cancel()
-        logoutAlertDialog.dismiss()
+        checkUserActivityTimer.cancel()
+
         if(this::deleteNoteAlertDialog.isInitialized) { deleteNoteAlertDialog.dismiss() }
+        if(this::logoutAlertDialog.isInitialized) { logoutAlertDialog.dismiss() }
 
         startActivity(logoutIntent)
     }
@@ -298,6 +302,7 @@ class MainActivity : AppCompatActivity() {
             .setChannelId(channelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(this)) {
             notify(notificationId, notificationBuilder.build())
@@ -319,6 +324,11 @@ class MainActivity : AppCompatActivity() {
         {
             val intent = Intent(this, PreferenceActivity::class.java)
             startActivity(intent)
+        }
+
+        if (id == R.id.logout_menu)
+        {
+           logoutUser()
         }
 
         return super.onOptionsItemSelected(item)

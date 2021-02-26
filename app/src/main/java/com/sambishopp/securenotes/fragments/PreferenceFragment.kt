@@ -15,7 +15,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
     companion object
     {
-        const val lockTimeKey = "lockTimePref" //Preferences key for lock time.
+        const val lockTimeKey = "lockTimerLengthChoice" //Preferences key for lock time.
         const val lockTimeDefault: Long = 600000
     }
 
@@ -23,7 +23,10 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var prefsEditor: SharedPreferences.Editor
 
+    //private val notificationOption = sharedPreferences.getBoolean("notificationOnOff", true)
+
     private val lockTimerOnOff: SwitchPreferenceCompat? = findPreference("lockTimerOnOff")
+    private val notificationOnOff: SwitchPreferenceCompat? = findPreference("notificationOnOff")
 
     private val lockTimerLengthPreference: ListPreference? = findPreference("lockTimerLengthChoice")
     private val lockTimeCurrentValue = lockTimerLengthPreference?.value
@@ -35,6 +38,14 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             //lockTimerLengthPreference?.onPreferenceChangeListener
     }
 
+    @SuppressLint("CommitPrefEdits")
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity) //requireActivity().getPreferences(Context.MODE_PRIVATE)
+        prefsEditor = sharedPreferences.edit()
+    }
+
     override fun onResume()
     {
         super.onResume()
@@ -43,9 +54,9 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         lockTimerOnOff?.summaryOff = "This is off"
         lockTimerOnOff?.summaryOn = "This is on"
         var lockTimerIsChecked = sharedPreferences.getBoolean("lockTimerOnOff", true)
-    }
 
-    //override fun on
+        //lockTimerChanged()
+    }
 
     private fun lockTimerChanged()
     {
@@ -81,12 +92,5 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 Log.e("Preference1", sharedPreferences.getLong(lockTimeKey, lockTimeDefault).toString())
             }
         }
-    }
-
-    @SuppressLint("CommitPrefEdits")
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity) //requireActivity().getPreferences(Context.MODE_PRIVATE)
-        prefsEditor = sharedPreferences.edit()
     }
 }
