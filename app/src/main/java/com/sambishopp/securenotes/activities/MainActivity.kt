@@ -11,6 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -103,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             )
         ).get(NoteViewModel::class.java)
 
-        getAllNotesDisplay()
+        loadNotes()
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             0,
@@ -142,7 +143,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        getAllNotesDisplay()
+        loadNotes()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     fun searchDatabase(query: Editable?) {
@@ -154,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         })
-        if(searchQuery.trim().isEmpty()) { getAllNotesDisplay() }
+        if(searchQuery.trim().isEmpty()) { loadNotes() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,19 +192,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllNotesDisplay() {
-        noteViewModel.getAllNotes()?.observe(this, { notes -> //Try removing the SAM here
+    private fun loadNotes() {
+        noteViewModel.getAllNotes()?.observe(this, { notes ->
             notes.let {
                 adapter.setData(
                     notes
                 )
             }
         })
-
-        if(this::deleteNoteAlertDialog.isInitialized)
-        {
-            deleteNoteAlertDialog.dismiss()
-        }
+        if(this::deleteNoteAlertDialog.isInitialized) { deleteNoteAlertDialog.dismiss() }
     }
 
     private fun deleteNote(notePosition: Note) {
@@ -211,7 +214,8 @@ class MainActivity : AppCompatActivity() {
         builder.setMessage("Are you sure you want to delete this note?")
 
         builder.setPositiveButton("Yes") { _, _ -> deleteNote(notePosition) }
-        builder.setNegativeButton("No") { _, _ -> getAllNotesDisplay() }
+        builder.setNegativeButton("No") { _, _ -> loadNotes() }
+        builder.setOnDismissListener { loadNotes() }
 
         deleteNoteAlertDialog = builder.create()
         deleteNoteAlertDialog.show()

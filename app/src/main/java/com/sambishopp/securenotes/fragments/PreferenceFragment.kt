@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import com.sambishopp.securenotes.R
 
@@ -29,20 +27,20 @@ class PreferenceFragment : PreferenceFragmentCompat() {
     private val notificationOnOff: SwitchPreferenceCompat? = findPreference("notificationOnOff")
 
     private val lockTimerLengthPreference: ListPreference? = findPreference("lockTimerLengthChoice")
-    private val lockTimeCurrentValue = lockTimerLengthPreference?.value
+    //private val lockTimeCurrentValue = lockTimerLengthPreference?.value
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?)
     {
         setPreferencesFromResource(R.xml.main_preferences, rootKey)
 
-            //lockTimerLengthPreference?.onPreferenceChangeListener
+
     }
 
     @SuppressLint("CommitPrefEdits")
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity) //requireActivity().getPreferences(Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getPreferences(Context.MODE_PRIVATE) //PreferenceManager.getDefaultSharedPreferences(activity) //requireActivity().getPreferences(Context.MODE_PRIVATE)
         prefsEditor = sharedPreferences.edit()
     }
 
@@ -53,12 +51,12 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         //Lock timer on/off
         lockTimerOnOff?.summaryOff = "This is off"
         lockTimerOnOff?.summaryOn = "This is on"
-        var lockTimerIsChecked = sharedPreferences.getBoolean("lockTimerOnOff", true)
+        //var lockTimerIsChecked = sharedPreferences.getBoolean("lockTimerOnOff", true)
 
         //lockTimerChanged()
     }
 
-    private fun lockTimerChanged()
+    /*private fun lockTimerChanged()
     {
         when {
             lockTimeCurrentValue.equals("1") //5 Minutes
@@ -92,5 +90,5 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 Log.e("Preference1", sharedPreferences.getLong(lockTimeKey, lockTimeDefault).toString())
             }
         }
-    }
+    }*/
 }

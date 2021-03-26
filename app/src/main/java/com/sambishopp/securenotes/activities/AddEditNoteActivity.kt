@@ -3,6 +3,7 @@ package com.sambishopp.securenotes.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -70,6 +71,16 @@ class AddEditNoteActivity : AppCompatActivity()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
     private fun saveNote()
     {
         val title = noteTitleText.text.toString()
@@ -89,7 +100,7 @@ class AddEditNoteActivity : AppCompatActivity()
         data.putExtra(EXTRA_DESCRIPTION, description)
         data.putExtra(EXTRA_DATE_TIME, dateTime)
 
-        val id = getIntent().getIntExtra(EXTRA_ID, -1)
+        val id = intent.getIntExtra(EXTRA_ID, -1)
         if(id != -1)
         {
             data.putExtra(EXTRA_ID, id)

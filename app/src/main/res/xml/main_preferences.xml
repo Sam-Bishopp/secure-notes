@@ -13,13 +13,13 @@
             android:defaultValue="true"
             app:key="lockTimerOnOff"
             android:title="Lock timer: Off/On"
-            android:summaryOn="Switch on"
-            android:summaryOff="Switch off"
+            android:summaryOn="Lock timer on"
+            android:summaryOff="Lock timer off"
             />
 
         <ListPreference
             android:defaultValue="false"
-            app:key="lockTimerLengthChoice"
+            app:key="lockTimerLength"
             android:title="@string/settings_lock_time_title"
             android:summary="@string/default_option"
             android:entries="@array/lock_times"
@@ -30,18 +30,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Notification"
+        android:title="Notifications"
         app:key="notificationCategory">
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             app:key="notificationOnOff"
             android:title="Be notified when the app locks"
+            android:summaryOn="You will receive notifications"
+            android:summaryOff="You will not receive notifications"
             />
 
     </PreferenceCategory>
-
-
 </PreferenceScreen>
 
 

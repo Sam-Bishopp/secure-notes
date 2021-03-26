@@ -1,6 +1,7 @@
 package com.sambishopp.securenotes.activities
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.sambishopp.securenotes.R
@@ -22,6 +23,16 @@ class PreferenceActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.content_preference, PreferenceFragment())
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     override fun onSupportNavigateUp(): Boolean {

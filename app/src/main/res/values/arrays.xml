@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
 
+<resources>
     <string-array name="lock_times">
         <item>5 Minutes</item>
         <item>10 Minutes</item>
@@ -10,11 +10,11 @@
     </string-array>
 
     <string-array name="lock_times_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1200000</item>
+        <item>1800000</item>
+        <item>3600000</item>
     </string-array>
 
 </resources>
